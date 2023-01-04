@@ -1,8 +1,7 @@
-import React, {FC, MutableRefObject, useEffect, useReducer, useRef} from "react";
+import React, {FC, useEffect, useReducer, useRef} from "react";
 
-interface customComponent {
-    current: any;
-    ID: number;
+export interface customComponent {
+    ID: string;
     forceUpdate: () => void;
 }
 
@@ -15,7 +14,6 @@ let currentlyRenderingComponent: React.FC & customComponent;
 
 export function store(object: plainObject) {
 
-    console.log(reactionsMap);
     return new Proxy(object, {
         get: function (target, key) {
             if (typeof currentlyRenderingComponent === "undefined") {
@@ -25,7 +23,7 @@ export function store(object: plainObject) {
                 reactionsMap[key as keyof typeof reactionsMap] = [currentlyRenderingComponent];
             }
             const hasComponent = reactionsMap[key as keyof typeof reactionsMap].find(
-                comp => comp.current.prototype.ID === currentlyRenderingComponent.ID
+                comp => comp.ID === currentlyRenderingComponent.ID
             );
             if (!hasComponent) {
                 reactionsMap[key as keyof typeof reactionsMap].push(currentlyRenderingComponent);
@@ -33,28 +31,24 @@ export function store(object: plainObject) {
             return target[key as keyof plainObject];
         },
         set: function (target, key, value) {
-            reactionsMap[key as keyof typeof reactionsMap].forEach(component => component.current.prototype.forceUpdate());
+            reactionsMap[key as keyof typeof reactionsMap].forEach(component => component.forceUpdate());
             target[key as keyof plainObject] = value;
             return true;
         }
     })
 }
 
-export function view(MyComponent: FC) {
-
+export function view(MyComponent: any) {
     return function ObeservedComponent(props: any) {
         const [_, forceUpdate] = useReducer((v) => v + 1, 0);
         const component = useRef<FC | undefined>(undefined);
-        MyComponent.prototype.ID = `${Math.floor(Math.random() * 10e9)}`;
-        MyComponent.prototype.forceUpdate = function() {
+        component.current = MyComponent
+        MyComponent.ID = `${Math.floor(Math.random() * 10e9)}`;
+        MyComponent.forceUpdate = function() {
             forceUpdate();
         }
 
-        if (!component.current) {
-            component.current = MyComponent
-        }
-
-        currentlyRenderingComponent = component as unknown as FC & customComponent;
+        currentlyRenderingComponent = component.current as unknown as FC & customComponent;
 
         useEffect(() => {
             return () => {
