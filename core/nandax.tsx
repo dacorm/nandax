@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useReducer, useRef} from "react";
+import React, {FC, MutableRefObject, useEffect, useReducer, useRef} from "react";
 
 interface customComponent {
     current: any;
@@ -44,7 +44,7 @@ export function view(MyComponent: FC) {
 
     return function ObeservedComponent(props: any) {
         const [_, forceUpdate] = useReducer((v) => v + 1, 0);
-        const component = useRef(undefined);
+        const component = useRef<FC | undefined>(undefined);
         MyComponent.prototype.ID = `${Math.floor(Math.random() * 10e9)}`;
         MyComponent.prototype.forceUpdate = function() {
             forceUpdate();
