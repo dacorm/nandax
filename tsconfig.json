@@ -1,0 +1,9 @@
+{
+  "include": ["./**/*"],
+  "compilerOptions": {
+    "strict": true,
+    "declaration": true, // generates declaration files
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
+  }
+}
