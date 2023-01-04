@@ -1,4 +1,6 @@
 const path = require('path');
+const autoprefixer = require('autoprefixer');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: './core/nandax.tsx',
@@ -13,11 +15,6 @@ module.exports = {
     },
     module: {
         rules: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                exclude: /node_modules/
-            },
             {
                 test: /\.tsx?$/,
                 use: 'ts-loader',

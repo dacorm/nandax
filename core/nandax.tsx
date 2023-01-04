@@ -1,5 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
-import {FC, useReducer} from "react";
+import React, {FC, useEffect, useReducer, useRef} from "react";
 
 interface customComponent {
     current: any;
